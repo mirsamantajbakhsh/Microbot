@@ -5,6 +5,7 @@
  */
 package helpers;
 
+import Fetcher.Fetcher;
 import static helpers.Variables.UAs;
 import static helpers.Variables.links;
 import java.io.File;
@@ -13,10 +14,17 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.security.GeneralSecurityException;
 import java.security.cert.X509Certificate;
+import java.sql.Time;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.Vector;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -73,8 +81,8 @@ public class Methods {
     }
 
     /**
-     * This method will report that one of threads finished one of its links.
-     * It will print the progress.
+     * This method will report that one of threads finished one of its links. It
+     * will print the progress.
      */
     public static synchronized void oneFinished() {
         //report progress
@@ -213,9 +221,9 @@ public class Methods {
     public static void makeLinksLogs() {
         FileWriter out = null;
         try {
-            File inputDirectory = new File (Variables.inputFile);
+            File inputDirectory = new File(Variables.inputFile);
             File outputFile = new File(checkDirectory(inputDirectory.getParent()) + File.separator + "Links.csv");
-            
+
             if (outputFile.getParentFile() != null) {
                 outputFile.getParentFile().mkdirs();
             }
@@ -244,12 +252,46 @@ public class Methods {
                 out.write(tmp + "\r\n");
                 out.flush();
             }
-            
+
             out.close();
-            
+
         } catch (IOException ex) {
             Variables.logger.Log(Methods.class, Variables.LogType.Error, "Error in saving remaining links. Details:\r\n" + ex.getMessage());
         }
+    }
+
+    /**
+     * This method will convert time in <b>00:00:00</b> 24 Hours format to date
+     * object.
+     *
+     * @param time The time string in "hh:mm:ss" format (24 Hours).
+     * @return The {@link Date} object of the input time, or null if the input
+     * is null.
+     */
+    public static Time getTime(String time) {
+        if (time != null) {
+            return Time.valueOf(time);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * This method will return current time in hh:mm:ss format.
+     *
+     * @return The {@link Date} object of current time in hh:mm:ss format or
+     * null if exception occurs.
+     */
+    public static Date getCurrentTime() {
+        Calendar currentTime = Calendar.getInstance();
+        DateFormat sdf = new SimpleDateFormat("hh:mm:ss");
+        Date tt = null;
+        try {
+            tt = sdf.parse(currentTime.getTime().getHours() + ":" + currentTime.getTime().getMinutes() + ":" + currentTime.getTime().getSeconds());
+        } catch (ParseException ex) {
+            Variables.logger.Log(Methods.class, Variables.LogType.Error, "Exception in getting current time.");
+        }
+        return tt;
     }
 //</editor-fold>
 

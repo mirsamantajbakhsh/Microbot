@@ -8,6 +8,7 @@ package helpers;
 import Fetcher.Controller;
 import java.io.File;
 import java.io.FileWriter;
+import java.sql.Time;
 import java.util.Vector;
 
 /**
@@ -52,6 +53,10 @@ public class Variables {
     // Sleep
     public static int maxSleep = 10;
     public static int minSleep = 5;
+    
+    //Auto start and stop
+    public static Time startTime = Time.valueOf("00:00:00");
+    public static Time endTime = Time.valueOf("08:00:00");
 
     // User Agent
     public static boolean randomUA = true; //If false, it will use the first UA of UAPath.

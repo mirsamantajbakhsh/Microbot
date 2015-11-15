@@ -16,6 +16,7 @@ import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
@@ -99,6 +100,22 @@ public class Fetcher implements Runnable {
         while (link != null && isWorking) {
             //Start fetching ...
 
+            //Check if it should work or not
+            Date currentTime = Methods.getCurrentTime();
+            if (!currentTime.after(Variables.startTime) || !currentTime.before(Variables.endTime)) {
+                try {
+                    synchronized (t) {
+                        getThread().wait(60000); //sleep 60 seconds
+                    }
+                } catch (InterruptedException ex) {
+                    if (Variables.debug) {
+                        Variables.logger.Log(Fetcher.class, Variables.LogType.Error, "Time is not between start and end time and thread is in exception!");
+                    }
+                } finally {
+                    continue;
+                }
+            }
+
             String URL = link.getNextUrl();
             String UA = Methods.getRandomUserAgent(); //Use this UA for refererd or single links.
 
@@ -163,7 +180,7 @@ public class Fetcher implements Runnable {
                         } else if (connection.getContentEncoding().equalsIgnoreCase("deflate")) {
                             html = IOUtils.toString(new InflaterInputStream(connection.getInputStream()));
                         }
-                        
+
                         FileWriter fw = new FileWriter(outputName);
                         fw.write(html);
                         fw.flush();

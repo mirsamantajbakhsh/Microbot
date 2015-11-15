@@ -91,6 +91,12 @@ public class Microbot {
             if (properties.containsKey("MinSleep")) {
                 Variables.minSleep = Integer.parseInt(properties.getProperty("MinSleep", "5"));
             }
+            if (properties.containsKey("StartTime")) {
+                Variables.startTime = Methods.getTime(properties.getProperty("StartTime", "00:00:00"));
+            }
+            if (properties.containsKey("EndTime")) {
+                Variables.endTime = Methods.getTime(properties.getProperty("EndTime", "08:00:00"));
+            }
             if (properties.containsKey("RandomUserAgent")) {
                 Variables.randomUA = Boolean.valueOf(properties.getProperty("RandomUserAgent", "true"));
             }
@@ -195,6 +201,8 @@ public class Microbot {
             prop.setProperty("ThreadCount", String.valueOf(Variables.threadCount));
             prop.setProperty("MaxSleep", String.valueOf(Variables.maxSleep));
             prop.setProperty("MinSleep", String.valueOf(Variables.minSleep));
+            prop.setProperty("StartTime", Variables.startTime.toString());
+            prop.setProperty("EndTime", Variables.endTime.toString());
             prop.setProperty("RandomUserAgent", String.valueOf(Variables.randomUA));
             prop.setProperty("UserAgentListFile", Variables.UAFile);
             prop.setProperty("Cookie", Variables.Cookie);
